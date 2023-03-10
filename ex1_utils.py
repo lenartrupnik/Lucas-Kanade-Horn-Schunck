@@ -69,10 +69,11 @@ def show_img(img):
     
 
 def image_spatial_derivates(im1, im2):
-    #dest = cv2.cornerHarris(gausssmooth(im1, 1), 2, 5, 0.05)
+    dest = cv2.cornerHarris(gausssmooth(im1, 1), 2, 5, 0.05)
     
-    im1 = gausssmooth(im1, 1)
-    im2 = gausssmooth(im2, 1)
+    im1 = gausssmooth(im1, 0.5)
+    im2 = gausssmooth(im2, 0.5)
+    
     #Normalize images
     im1 = im1/255
     im2 = im2/255
@@ -80,11 +81,11 @@ def image_spatial_derivates(im1, im2):
     It = gausssmooth(im2 - im1, 1)
     
     Ix_0, Iy_0 = gaussderiv(im1, 0.4)
-    Ix_1, Iy_1 = gaussderiv(im1, 0.4)
+    Ix_1, Iy_1 = gaussderiv(im2, 0.4)
     Ix = (Ix_0 + Ix_1) / 2
     Iy = (Iy_0 + Iy_1) / 2
     
-    return Ix, Iy, It, []
+    return Ix, Iy, It, dest
 
 
 def to_grayscale(img):

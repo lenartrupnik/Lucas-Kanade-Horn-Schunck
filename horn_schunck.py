@@ -3,7 +3,7 @@ from scipy.ndimage import convolve
 from lucas_kanade import lucaskanade
 from sklearn.metrics.pairwise import cosine_similarity
 
-def horn_schunck(im1, im2, n_iters, lmbd, improved = True):
+def horn_schunck(im1, im2, n_iters, lmbd, lucas_kanade= True):
     assert im1.shape == im2.shape, f'Image shapes are not the same.'
     #Get image spatial derivate
     Ix, Iy, It, _ = image_spatial_derivates(im1, im2)
@@ -16,7 +16,7 @@ def horn_schunck(im1, im2, n_iters, lmbd, improved = True):
     u = np.zeros(im1.shape)
     v = np.zeros(im1.shape)
     
-    if improved:
+    if  lucas_kanade:
         u, v = lucaskanade(im1, im2, 10)
     #Define initial estimates for u and v
     

@@ -4,7 +4,7 @@ from scipy.ndimage import convolve
 import numpy as np
 import time
 
-def lucaskanade(im1, im2, N = 3):
+def lucaskanade(im1, im2, N = 3, Harris = False):
     assert im1.shape == im2.shape
     
 
@@ -13,6 +13,7 @@ def lucaskanade(im1, im2, N = 3):
     
     #Get image spatial derivates
     Ix, Iy, It, dest = image_spatial_derivates(im1, im2)
+
     #Follow lecture procedure to calculate every component
     Ix_t = convolve(np.multiply(Ix, It), kernel)
     Iy_t = convolve(np.multiply(Iy, It), kernel)
@@ -36,12 +37,14 @@ def lucaskanade(im1, im2, N = 3):
             np.multiply(Ix_x, Iy_t), 
             np.multiply(Ix_y, Ix_t)),
         D)
-         
+    
+    if Harris:
+        U[dest< 0.1]=0
+        V[dest< 0.1]=0
+        
     #U[dest > 0.01 * dest.max()]=[0]
     #V[dest > 0.01 * dest.max()]=[0]
     #im1[dest > 0.0001 * dest.max()]=[255]
     #show_img(im1)
-    
-    
     return U, V
     
