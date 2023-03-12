@@ -33,7 +33,7 @@ def plot_scnthetic_image():
 def plot_custom_images(im1, im2):
     
     U_lk, V_lk = lucaskanade(im1, im2, 10)
-    U_hs, V_hs = horn_schunck(im1, im2, 500, 0.4, True)
+    U_hs, V_hs = horn_schunck(im1, im2, 10000, 0.4, False)
     #U_hs_imp, V_hs_imp = horn_schunck(im1, im2, 350, 0.5, lucas_kanade=True)
     
     # fig1, ((ax1_11, ax1_12), (ax1_21, ax1_22)) = plt.subplots(2,2)
@@ -81,11 +81,17 @@ def plot_harris_improvement(im1, im2):
     U_lk, V_lk = lucaskanade(im1, im2, 10, False)
     U_lk_h, V_lk_h = lucaskanade(im1, im2, 10, Harris=True)
     
-    fig3, ((ax3_21, ax3_22)) = plt.subplots(2)
+    fig3, ((ax3_11, ax3_12), (ax3_21, ax3_22)) = plt.subplots(2,2)
+    ax3_11.imshow(im1)
+    ax3_12.imshow(im2)
     show_flow(U_lk, V_lk, ax3_21, type="field", set_aspect=True)
     show_flow(U_lk_h, V_lk_h, ax3_22, type='field', set_aspect=True)
     ax3_21.set_title("Lucas-Kanade")
     ax3_22.set_title("Lucas-Kanade with harris")
+    ax3_11.set_title("Frame t")
+    ax3_12.set_title("Frame t + 1")
+    ax3_21.set_title("Lucas-Kanade")
+    ax3_22.set_title("Lucas-Kanade with Harris")
     plt.show()
 
 def plot_different_parameters(im1, im2):
@@ -120,22 +126,21 @@ def plot_different_parameters(im1, im2):
 
 def measure_time(im1, im2):
     kernel_size = [10, 100]
-    iterations = [100, 1000]
-    iterations = [35, 350]
+    iterations = [1000]
     
     lucas_times = []
     horn_times = []
-    print(">>> lucas vs horn")
-    for kernel in kernel_size:
-        start = time.process_time()
-        lucaskanade(im1, im2, kernel)
-        end= time.process_time()
-        lucas_times.append(end-start)
-        print(f'Time for lucas-Kanade with {kernel} kernel = {lucas_times[-1]}')
+    # print(">>> lucas vs horn")
+    # for kernel in kernel_size:
+    #     start = time.process_time()
+    #     lucaskanade(im1, im2, kernel)
+    #     end= time.process_time()
+    #     lucas_times.append(end-start)
+    #     print(f'Time for lucas-Kanade with {kernel} kernel = {lucas_times[-1]}')
     
     for iteration in iterations:
         start = time.process_time()
-        horn_schunck(im1, im2, iteration, 0.5)
+        horn_schunck(im1, im2, iteration, 0.5, lucas_kanade=False)
         end= time.process_time()
         horn_times.append(end-start)
         print(f'Time for horn-Shunck with {iteration} iterations = {horn_times[-1]}')
@@ -143,26 +148,25 @@ def measure_time(im1, im2):
     print(">>> Improved horn")
     for iteration in iterations:
         start = time.process_time()
-        horn_schunck(im1, im2, iteration, 0.5, improved=True)
+        horn_schunck(im1, im2, iteration, 0.5, lucas_kanade=True)
         end= time.process_time()
         horn_times.append(end-start)
-        print(f'Time for horn-Shunck with {iteration} iterations = {horn_times[-1]}')
-    
-    
-    
+        print(f'Time for horn-Shunck with Lucas-Kanade and {iteration} iterations = {horn_times[-1]}')
     #print(time_lucas, time_horn)
     
     
 if __name__ == "__main__":
+    #Select images that you wan't to test
+    
     #im1, im2 = prepare_images("custom images/traffic_0.png", "custom images/traffic_1.png")
-    im1, im2 = prepare_images("custom images/ship_0.png", "custom images/ship_1.png")
+    #im1, im2 = prepare_images("custom images/ship_0.png", "custom images/ship_1.png")
     #im1, im2 = prepare_images("custom images/robot_0.png", "custom images/robot_1.png")
+    im1, im2 = prepare_images("collision/00000147.jpg", "collision/00000148.jpg")
 
-    #im1[dest > 0.01 * dest.max()]=[255]
     #show_img(im1)
     #plot_scnthetic_image()
     
-    #plot_custom_images(im1, im2)
-    plot_harris_improvement(im1, im2)
+    plot_custom_images(im1, im2)
+    #plot_harris_improvement(im1, im2)
     #plot_different_parameters(im1, im2)
     #measure_time(im1, im2)

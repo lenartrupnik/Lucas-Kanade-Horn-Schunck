@@ -7,7 +7,6 @@ import time
 def lucaskanade(im1, im2, N = 3, Harris = False):
     assert im1.shape == im2.shape
     
-
     #Prepare kernel for convolution
     kernel = np.ones((N, N))
     
@@ -37,14 +36,10 @@ def lucaskanade(im1, im2, N = 3, Harris = False):
             np.multiply(Ix_x, Iy_t), 
             np.multiply(Ix_y, Ix_t)),
         D)
-    
+    # Harris improvement
     if Harris:
-        U[dest< 0.1]=0
-        V[dest< 0.1]=0
+        U[dest< 0.001]=0
+        V[dest< 0.001]=0
         
-    #U[dest > 0.01 * dest.max()]=[0]
-    #V[dest > 0.01 * dest.max()]=[0]
-    #im1[dest > 0.0001 * dest.max()]=[255]
-    #show_img(im1)
     return U, V
     

@@ -8,7 +8,7 @@ def horn_schunck(im1, im2, n_iters, lmbd, lucas_kanade= True):
     #Get image spatial derivate
     Ix, Iy, It, _ = image_spatial_derivates(im1, im2)
     
-    #Define residual Laplacian kernel
+    #Define Laplacian kernel
     L_d = np.matrix([[0, 0.25, 0],
                    [0.25, 0, 0.25],
                    [0, 0.25, 0]])
@@ -40,5 +40,13 @@ def horn_schunck(im1, im2, n_iters, lmbd, lucas_kanade= True):
         #Calculate u, v
         u = np.subtract(u_a, np.multiply(Ix, P_D))
         v = np.subtract(v_a, np.multiply(Iy, P_D))
-        
+
+        u_similarity = round(np.sum(cosine_similarity(u, u_a)) / (Ix.shape[0] * Ix.shape[1]), 8)
+        v_similarity = round(np.sum(cosine_similarity(v, v_a)) / (Ix.shape[0] * Ix.shape[1]), 8)
+
+        if u_similarity > 0.4 or v_similarity > 0.4:
+            print(">>>Converged", u_similarity, v_similarity)
+            
+            return u, v
+    #print(u_similarity, v_similarity, i)
     return u, v
