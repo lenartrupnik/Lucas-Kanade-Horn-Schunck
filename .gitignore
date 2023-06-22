@@ -1,0 +1,11 @@
+# Object file
+*.o
+
+# Ada Library Information
+*.ali
+test.py
+lr_hw1_report.zip
+lab2
+disparity
+collision
+__pycache__
